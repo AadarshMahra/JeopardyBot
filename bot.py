@@ -23,7 +23,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if message.content == 'host?':
-        await message.channel.send('Happy to be hosting Jeopardy!')
+        await message.channel.send("Hi. I'm your host!")
     await bot.process_commands(message)
 
 
