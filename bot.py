@@ -59,6 +59,5 @@ async def await_rand_question(ctx):
         except asyncio.TimeoutError:
             await ctx.send('Time out error...')
 
-    print('Exited while loop...')
 
 bot.run(TOKEN.strip())
