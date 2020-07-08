@@ -57,7 +57,7 @@ async def await_rand_question(ctx):
                 await ctx.send('incorrect...')
                 continue
         except asyncio.TimeoutError:
-            await ctx.send('Time out error...')
+            await ctx.send('Time out error')
 
 
 bot.run(TOKEN.strip())
