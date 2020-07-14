@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import CommandNotFound
 import random
 from utils.functions import fetch_random_panel as frp
 from utils.question import QuestionPanel
@@ -19,6 +20,12 @@ async def on_ready():
     print('Name: {}'.format(bot.user.name))
     print('ID: {}'.format(bot.user.id))
 
+# ignore CommandNotFound Errors !
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    raise error
 
 @bot.event
 async def on_message(message):
@@ -39,25 +46,17 @@ async def await_rand_question(ctx):
     attempt = ''
     random_row = int(random.random()*216930)
     panel = frp(random_row)
-    await ctx.send(embed=panel.get_embed())
-    t_end = time.time() + 5
-    while True:
-        try:
-            attempt = await bot.wait_for('message')
-            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))
-            if time.time() > t_end:
-                await ctx.send('You ran out of time!')
-                return
-            elif attempt == 't.q':
-                return
-            elif attempt.content == panel.get_answer():
-                await ctx.send('Correct!')
-                return
-            else:
-                await ctx.send('incorrect...')
-                continue
-        except asyncio.TimeoutError:
-            await ctx.send('Time out error')
+    await ctx.send(embed=panel.get_embed()) # display panel
 
+    t_end = time.time() + 20
+    while time.time() < t_end:
+        attempt = await bot.wait_for('message')
+        print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))
+        if attempt.content == panel.get_answer():
+            await ctx.send('Correct!')
+            return
+        elif attempt.content != panel.get_answer():
+            await ctx.send('incorrect...')
+            continue
 
 bot.run(TOKEN.strip())
