@@ -3,9 +3,10 @@ from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 import random
 from utils.functions import fetch_random_panel as frp
+from utils.functions import is_valid
 from utils.question import QuestionPanel
 import time
-import asyncio
+
 
 
 with open('config.txt', 'r') as f:
@@ -43,7 +44,7 @@ async def await_rand_question(ctx):
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
         return
-    attempt = ''
+
     random_row = int(random.random()*216930)
     panel = frp(random_row)
     await ctx.send(embed=panel.get_embed())  # display panel
@@ -52,11 +53,10 @@ async def await_rand_question(ctx):
     while time.time() < t_end:
         try:
             attempt = await bot.wait_for('message')
-            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))
+            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # for console
             if attempt.content == 't.q':
-                await ctx.send('The correct answer was \'{}\''.format(panel.get_answer()))
                 break
-            elif attempt.content == panel.get_answer():
+            elif is_valid(attempt, panel):
                 await ctx.send('Correct {}!'.format(str(attempt.author)[:-5]))
                 return
             elif attempt.content != panel.get_answer():
