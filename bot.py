@@ -46,17 +46,24 @@ async def await_rand_question(ctx):
     attempt = ''
     random_row = int(random.random()*216930)
     panel = frp(random_row)
-    await ctx.send(embed=panel.get_embed()) # display panel
+    await ctx.send(embed=panel.get_embed())  # display panel
 
-    t_end = time.time() + 20
+    t_end = time.time() + 60
     while time.time() < t_end:
-        attempt = await bot.wait_for('message')
-        print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))
-        if attempt.content == panel.get_answer():
-            await ctx.send('Correct!')
-            return
-        elif attempt.content != panel.get_answer():
-            await ctx.send('incorrect...')
-            continue
+        try:
+            attempt = await bot.wait_for('message')
+            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))
+            if attempt.content == 't.q':
+                await ctx.send('The correct answer was \'{}\''.format(panel.get_answer()))
+                break
+            elif attempt.content == panel.get_answer():
+                await ctx.send('Correct {}!'.format(str(attempt.author)[:-5]))
+                return
+            elif attempt.content != panel.get_answer():
+                await ctx.send('That is incorrect {}.'.format(str(attempt.author)[:-5]))
+                continue
+        except Exception as e:
+            print(e)
+    await ctx.send('Times up! The correct answer was \'{}\''.format(panel.get_answer()))
 
 bot.run(TOKEN.strip())
