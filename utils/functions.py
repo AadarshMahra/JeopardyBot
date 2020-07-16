@@ -25,15 +25,15 @@ def is_question_valid(question_str):
 # returns True if attempt is valid
 
 
-def is_valid(attempt, panel):
+def is_valid(attempt, answer):
     possible_answers = set()
-
+    attempt = attempt.lower()  # lowercase all attempts
     # takes care of case sensitivity(in general)
-    answer = panel.get_answer().lower()
+    answer = answer.lower()
     possible_answers.add(answer)
 
     # get rid of parentheses
     possible_answers.add(answer.strip(' ()'))
 
     # what else is next?
-    return attempt.content in possible_answers
+    return attempt in possible_answers

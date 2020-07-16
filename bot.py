@@ -56,7 +56,7 @@ async def await_rand_question(ctx):
             print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # for console
             if attempt.content == 't.q':
                 break
-            elif is_valid(attempt, panel):
+            elif is_valid(attempt.content, panel.get_answer()):
                 await ctx.send('Correct {}!'.format(str(attempt.author)[:-5]))
                 return
             elif attempt.content != panel.get_answer():
