@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
-import random
 from utils.functions import fetch_random_panel as frp
 from utils.functions import is_valid
 from utils.question import QuestionPanel
 import time
 
-
+#  global dict to keep track of user score in every server
+#  key: (username, server id), value: user score in that server
+scores = {}
 
 with open('config.txt', 'r') as f:
     TOKEN = f.readline().strip()
@@ -41,14 +42,14 @@ def check(m, panel):
 
 @bot.command(name='t.q', aliases=['Random'])
 async def await_rand_question(ctx):
+    # update scores dict accordingly
+    
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
         return
-
-    random_row = int(random.random()*216930)
-    panel = frp(random_row)
+    panel = frp()
     await ctx.send(embed=panel.get_embed())  # display panel
-
+    # question/answer logic + time
     t_end = time.time() + 60
     while time.time() < t_end:
         try:
