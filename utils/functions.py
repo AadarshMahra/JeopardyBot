@@ -1,9 +1,11 @@
 import discord
 import pandas as pd
 from utils.question import QuestionPanel
+import random
 
 
-def fetch_random_panel(n):
+def fetch_random_panel():
+    n = int(random.random() * 216930)
     df = pd.read_csv('data/jeopardy_data.csv')
     row = df.iloc[n, 3:7].tolist()  # fetches from random index
     print(row)
@@ -34,6 +36,8 @@ def is_valid(attempt, answer):
 
     # get rid of parentheses
     possible_answers.add(answer.strip(' ()'))
-
+    # get rid of surrounding apostrophes
+    possible_answers.add(answer.strip('\''))
+    print(possible_answers)
     # what else is next?
     return attempt in possible_answers
