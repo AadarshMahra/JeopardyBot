@@ -38,6 +38,6 @@ def is_valid(attempt, answer):
     possible_answers.add(answer.strip(' ()'))
     # get rid of surrounding apostrophes
     possible_answers.add(answer.strip('\''))
-    print(possible_answers)
+    # print(possible_answers)
     # what else is next?
     return attempt in possible_answers
