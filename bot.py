@@ -48,15 +48,17 @@ async def on_message(message):
 
 @bot.command(name='t.top')
 async def display_server_scores(ctx):  # print scores of users in same server as caller
+    print(str(ctx.message.author)+" requested scoreboard.")  # print check to console
+    print('__________SCOREBOARD_____________')
+    await ctx.send('SCOREBOARD: ')
     for key, value in scores.items():
         if ctx.message.guild.id == key[1]:
             print(str(key[0])[:-5] + ": $" + str(value))  # print usernames followed by their score
+            await ctx.send(str(key[0])[:-5] + ": $" + str(value))
 
 
 @bot.command(name='t.q', aliases=['Random'])
 async def await_rand_question(ctx):
-    # update scores dict accordingly
-
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
         return
@@ -67,13 +69,14 @@ async def await_rand_question(ctx):
     while time.time() < t_end:
         try:
             attempt = await bot.wait_for('message')
-            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # for console
-            if attempt.content == 't.q':
+            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # print to console
+            if attempt.content in ['t.q', 't.top']:
+                break
+            elif attempt.content in ctx.bot.commands:
                 break
             elif is_valid(attempt.content, panel.get_answer()):
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
-                # update scores here
-                update_scores(attempt, panel.get_value())
+                update_scores(attempt, panel.get_value())  # update scores here
                 return
             elif attempt.content != panel.get_answer():
                 await ctx.send('That is incorrect {}.'.format(str(attempt.author)[:-5]))
