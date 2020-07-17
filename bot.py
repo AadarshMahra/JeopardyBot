@@ -16,11 +16,20 @@ with open('config.txt', 'r') as f:
 bot = commands.Bot(command_prefix='', case_insensitive=True, help_command=None)
 
 
+def update_scores(message, score_update):
+    global scores  # update dictionary globally
+    if (message.author, message.guild.id) not in scores:
+        scores[(message.author, message.guild.id)] = score_update
+    else:
+        scores[(message.author, message.guild.id)] += score_update
+
+
 @bot.event
 async def on_ready():
     print('Bot online')
     print('Name: {}'.format(bot.user.name))
     print('ID: {}'.format(bot.user.id))
+
 
 # ignore CommandNotFound Errors !
 @bot.event
@@ -29,6 +38,7 @@ async def on_command_error(ctx, error):
         return
     raise error
 
+
 @bot.event
 async def on_message(message):
     if message.content == 'host?':
@@ -36,14 +46,17 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-def check(m, panel):
-    return m.content == panel.get_answer()
+@bot.command(name='t.top')
+async def display_server_scores(ctx):  # print scores of users in same server as caller
+    for key, value in scores.items():
+        if ctx.message.guild.id == key[1]:
+            print(str(key[0])[:-5] + ": $" + str(value))  # print usernames followed by their score
 
 
 @bot.command(name='t.q', aliases=['Random'])
 async def await_rand_question(ctx):
     # update scores dict accordingly
-    
+
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
         return
@@ -58,7 +71,9 @@ async def await_rand_question(ctx):
             if attempt.content == 't.q':
                 break
             elif is_valid(attempt.content, panel.get_answer()):
-                await ctx.send('Correct {}!'.format(str(attempt.author)[:-5]))
+                await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
+                # update scores here
+                update_scores(attempt, panel.get_value())
                 return
             elif attempt.content != panel.get_answer():
                 await ctx.send('That is incorrect {}.'.format(str(attempt.author)[:-5]))
