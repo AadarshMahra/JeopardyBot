@@ -46,15 +46,15 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
+# now displays the score in descending order
 @bot.command(name='t.top')
 async def display_server_scores(ctx):
     print(str(ctx.message.author)+" requested scoreboard.")  # print check to console
     embed = discord.Embed(title=f'Top Scores on {ctx.message.guild.name}:', inline=False)
-    for key, value in scores.items():
-        username = str(key[0])[:-5]
-        if ctx.message.guild.id == key[1]:
-            print(username + ": $" + str(value))  # print usernames followed by their score
-            embed.add_field(name=username, value="$" + str(value), inline=False)
+    sort_orders = sorted(scores.items(), key=lambda x: x[1], reverse=True)  # sorts dict in descending order
+    for i in sort_orders:
+        username = str(i[0][0])
+        embed.add_field(name=username[:-5], value="$" + str(i[1]), inline=False)
     await ctx.send(embed=embed)
 
 
