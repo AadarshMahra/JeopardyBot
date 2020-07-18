@@ -47,14 +47,15 @@ async def on_message(message):
 
 
 @bot.command(name='t.top')
-async def display_server_scores(ctx):  # print scores of users in same server as caller
+async def display_server_scores(ctx):
     print(str(ctx.message.author)+" requested scoreboard.")  # print check to console
-    print('__________SCOREBOARD_____________')
-    await ctx.send('SCOREBOARD: ')
+    embed = discord.Embed(title=f'Top Scores on {ctx.message.guild.name}:', inline=False)
     for key, value in scores.items():
+        username = str(key[0])[:-5]
         if ctx.message.guild.id == key[1]:
-            print(str(key[0])[:-5] + ": $" + str(value))  # print usernames followed by their score
-            await ctx.send(str(key[0])[:-5] + ": $" + str(value))
+            print(username + ": $" + str(value))  # print usernames followed by their score
+            embed.add_field(name=username, value="$" + str(value), inline=False)
+    await ctx.send(embed=embed)
 
 
 @bot.command(name='t.q', aliases=['Random'])
