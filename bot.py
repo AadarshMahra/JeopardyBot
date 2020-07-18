@@ -3,7 +3,6 @@ from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from utils.functions import fetch_random_panel as frp
 from utils.functions import is_valid
-from utils.question import QuestionPanel
 import time
 
 #  global dict to keep track of user score in every server
@@ -18,11 +17,14 @@ bot = commands.Bot(command_prefix='', case_insensitive=True, help_command=None)
 
 def update_scores(message, score_update):
     global scores  # update dictionary globally
-    if (message.author, message.guild.id) not in scores:
+    if (message.author, message.guild.id) not in scores and score_update > 0:
         scores[(message.author, message.guild.id)] = score_update
     else:
-        scores[(message.author, message.guild.id)] += score_update
-
+        if scores[(message.author, message.guild.id)] + score_update < 0:
+            scores[(message.author, message.guild.id)] = 0
+        else:
+            scores[(message.author, message.guild.id)] += score_update
+ 
 
 @bot.event
 async def on_ready():
@@ -77,10 +79,11 @@ async def await_rand_question(ctx):
                 break
             elif is_valid(attempt.content, panel.get_answer()):
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
-                update_scores(attempt, panel.get_value())  # update scores here
+                update_scores(attempt, panel.get_value())  # increase score here
                 return
             elif attempt.content != panel.get_answer():
-                await ctx.send('That is incorrect {}.'.format(str(attempt.author)[:-5]))
+                await ctx.send('That is incorrect {}. You lost ${}'.format(str(attempt.author)[:-5], panel.get_value()))
+                update_scores(attempt, -1*panel.get_value())  # decrease score here
                 continue
         except Exception as e:
             print(e)
