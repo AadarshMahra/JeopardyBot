@@ -5,11 +5,15 @@ import random
 
 
 def fetch_random_panel():
-    n = int(random.random() * 216930)
-    df = pd.read_csv('data/jeopardy_data.csv')
-    row = df.iloc[n, 3:7].tolist()  # fetches from random index
-    print(row)
-    qp = QuestionPanel(row[0], row[1], row[2], row[3])
+    while True:  # only creates QP object when value isn't Null
+        n = int(random.random() * 216930)
+        df = pd.read_csv('data/jeopardy_data.csv')
+        row = df.iloc[n, 3:7].tolist()  # fetches from random index
+        print(row)
+        temp = row[1]  # hold value here
+        if temp != 'None':
+            qp = QuestionPanel(row[0], row[1], row[2], row[3])
+            break
     return qp
 
 
