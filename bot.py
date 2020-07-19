@@ -24,7 +24,7 @@ def update_scores(message, score_update):
             scores[(message.author, message.guild.id)] = 0
         else:
             scores[(message.author, message.guild.id)] += score_update
- 
+
 
 @bot.event
 async def on_ready():
@@ -48,11 +48,16 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-# now displays the score in descending order
+# displays top scores in descending order
 @bot.command(name='t.top')
 async def display_server_scores(ctx):
+    # makes sure bot doesn't respond to itself
+    if ctx.author.bot:
+        return
     print(str(ctx.message.author)+" requested scoreboard.")  # print check to console
     embed = discord.Embed(title=f'Top Scores on {ctx.message.guild.name}:', inline=False)
+    if len(scores) == 0:
+        embed.add_field(name="No Scores to Display!", value="Start playing by typing t.q", inline=False)
     sort_orders = sorted(scores.items(), key=lambda x: x[1], reverse=True)  # sorts dict in descending order
     for i in sort_orders:
         username = str(i[0][0])
