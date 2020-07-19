@@ -5,13 +5,12 @@ import random
 
 
 def fetch_random_panel():
-    while True:  # only creates QP object when value isn't Null
+    while True:
         n = int(random.random() * 216930)
         df = pd.read_csv('data/jeopardy_data.csv')
         row = df.iloc[n, 3:7].tolist()  # fetches from random index
         print(row)
-        temp = row[1]  # hold value here
-        if temp != 'None':
+        if row[1] != 'None' and "href" not in row[2]:  # value can't be Null and question can't have image link
             qp = QuestionPanel(row[0], row[1], row[2], row[3])
             break
     return qp
