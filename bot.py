@@ -81,7 +81,7 @@ async def await_rand_question(ctx):
             if attempt.author.bot:
                 return  # if the bot responds, end the function right away
             elif attempt.content in ['t.q', 't.top']:
-                break  # reveal the right answer before
+                break
             elif is_valid(attempt.content, panel.get_answer()):
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, panel.get_value())  # increase score here
