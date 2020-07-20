@@ -78,10 +78,10 @@ async def await_rand_question(ctx):
         try:
             attempt = await bot.wait_for('message')
             print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # print to console
-            if attempt.content in ['t.q', 't.top']:
-                break
-            elif attempt.content in ctx.bot.commands:
-                break
+            if attempt.author.bot:
+                return  # if the bot responds, end the function right away
+            elif attempt.content in ['t.q', 't.top']:
+                break  # reveal the right answer before
             elif is_valid(attempt.content, panel.get_answer()):
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, panel.get_value())  # increase score here
@@ -91,7 +91,7 @@ async def await_rand_question(ctx):
                 update_scores(attempt, -1*panel.get_value())  # decrease score here
                 continue
         except Exception as e:
-            print(e)
+            print("Exception: " + str(e))
     await ctx.send('Times up! The correct answer was \'{}\''.format(panel.get_answer()))
 
 bot.run(TOKEN.strip())
