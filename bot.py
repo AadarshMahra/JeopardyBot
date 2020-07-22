@@ -89,7 +89,6 @@ async def await_rand_question(ctx):
             elif attempt.content != panel.get_answer():
                 await ctx.send('That is incorrect {}. You lost ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, -1*panel.get_value())  # decrease score here
-                continue
         except Exception as e:
             print("Exception: " + str(e))
     await ctx.send('Times up! The correct answer was \'{}\''.format(panel.get_answer()))
