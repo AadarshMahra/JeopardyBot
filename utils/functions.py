@@ -23,15 +23,13 @@ def check_answer(attempt, q_panel):
         return False
 
 
-def is_question_valid(question_str):
-    return question_str != '[video clue]'
-
 # checks if an attempt is valid given that attempt and the correct answer's panel
 # returns True if attempt is valid
 
 
-def is_valid(attempt, answer):
+def is_valid(attempt, panel):
     possible_answers = set()
+    answer = panel.get_answer();
     attempt = attempt.lower()  # lowercase all attempts
     # takes care of case sensitivity(in general)
     answer = answer.lower()
