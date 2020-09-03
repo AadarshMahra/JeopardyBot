@@ -29,8 +29,7 @@ def check_answer(attempt, q_panel):
 
 def is_valid(attempt, panel):
     possible_answers = set()
-    answer = panel.get_answer();
-    attempt = attempt.lower()  # lowercase all attempts
+    answer = panel.get_answer()
     # takes care of case sensitivity(in general)
     answer = answer.lower()
     possible_answers.add(answer)
@@ -41,4 +40,5 @@ def is_valid(attempt, panel):
     possible_answers.add(answer.strip('\''))
     # print(possible_answers)
     # what else is next?
+    attempt = attempt.lower()  # lowercase all attempts
     return attempt in possible_answers
