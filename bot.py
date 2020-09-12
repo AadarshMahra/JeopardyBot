@@ -49,6 +49,7 @@ async def on_message(message):
 
 
 # displays top scores in descending order
+# scores are based on server
 @bot.command(name='t.top')
 async def display_server_scores(ctx):
     # makes sure bot doesn't respond to itself
@@ -67,6 +68,7 @@ async def display_server_scores(ctx):
 
 @bot.command(name='t.q', aliases=['Random'])
 async def await_rand_question(ctx):
+    current_channel_id = ctx.channel.id
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
         return
@@ -77,9 +79,11 @@ async def await_rand_question(ctx):
     while time.time() < t_end:
         try:
             attempt = await bot.wait_for('message')
-            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # print to console
+            print('\"{}\" was sent by {} in channel:\'{}\''.format(attempt.content, attempt.author, attempt.channel.name))  # print to console
             if attempt.author.bot:
                 return  # if the bot responds, end the function right away
+            elif current_channel_id != attempt.channel.id:
+                continue  # if the channel doesn't match, try again
             elif attempt.content in ['t.q', 't.top']:
                 break
             elif is_valid(attempt.content, panel):
@@ -87,6 +91,7 @@ async def await_rand_question(ctx):
                 update_scores(attempt, panel.get_value())  # increase score here
                 return
             elif attempt.content != panel.get_answer():
+                print('Incorrect check\n')
                 await ctx.send('That is incorrect {}. You lost ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, -1*panel.get_value())  # decrease score here
         except Exception as e:
