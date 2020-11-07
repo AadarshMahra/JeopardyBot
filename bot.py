@@ -8,7 +8,7 @@ import time
 #  global dict to keep track of user score in every server
 #  key: (username, server id), value: user score in that server
 scores = {}
-
+valid_starters = ['what is ', 'What is ']
 with open('config.txt', 'r') as f:
     TOKEN = f.readline().strip()
 
