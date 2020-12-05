@@ -5,5 +5,7 @@ Jeopardy bot that displays questions and gives feedback to answers.
 https://discord.com/api/oauth2/authorize?client_id=723432980726546453&permissions=0&scope=bot
 
 ## Commands 
-### f.i : Next question command 
-### f.top : Check channel leaderboard command 
+### Next question  
+  **f.i** requests a new question. No money is lost. 
+### Check channel leaderboard  
+  **f.top** displays the text channel's current leaderboard. 
