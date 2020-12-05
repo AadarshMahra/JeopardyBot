@@ -1,5 +1,7 @@
 import discord
 import pandas as pd
+import jellyfish as jf
+from functools import lru_cache
 from utils.question import QuestionPanel
 import random
 
@@ -26,19 +28,6 @@ def check_answer(attempt, q_panel):
 # checks if an attempt is valid given that attempt and the correct answer's panel
 # returns True if attempt is valid
 
-
-def is_valid(attempt, panel):
-    possible_answers = set()
-    answer = panel.get_answer()
-    # takes care of case sensitivity(in general)
-    answer = answer.lower()
-    possible_answers.add(answer)
-
-    # get rid of parentheses
-    possible_answers.add(answer.strip(' ()'))
-    # get rid of surrounding apostrophes
-    possible_answers.add(answer.strip('\''))
-    # print(possible_answers)
-    # what else is next?
-    attempt = attempt.lower()  # lowercase all attempts
-    return attempt in possible_answers
+@lru_cache(maxsize=None)
+def jaro_winkler(a, b):
+    return jf.jaro_winkler_similarity(a, b)
