@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from utils.functions import fetch_random_panel as frp
-from utils.functions import is_valid
 from utils.functions import jaro_winkler
 import time
 
