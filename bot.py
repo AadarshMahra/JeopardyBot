@@ -50,7 +50,7 @@ async def on_message(message):
 
 # displays top scores in descending order
 # scores are based on server
-@bot.command(name='t.top')
+@bot.command(name='f.top')
 async def display_server_scores(ctx):
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
@@ -58,7 +58,7 @@ async def display_server_scores(ctx):
     print(str(ctx.message.author)+" requested scoreboard.")  # print check to console
     embed = discord.Embed(title=f'Top Scores on {ctx.message.guild.name}:', inline=False)
     if len(scores) == 0:
-        embed.add_field(name="No Scores to Display!", value="Start playing by typing t.q", inline=False)
+        embed.add_field(name="No Scores to Display!", value="Start playing by typing f.i", inline=False)
     sort_orders = sorted(scores.items(), key=lambda x: x[1], reverse=True)  # sorts dict in descending order
     for i in sort_orders:
         username = str(i[0][0])
@@ -66,7 +66,7 @@ async def display_server_scores(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(name='t.q', aliases=['Random'])
+@bot.command(name='f.i', aliases=['f..i'])
 async def await_rand_question(ctx):
     current_channel_id = ctx.channel.id
     # makes sure bot doesn't respond to itself
@@ -84,14 +84,14 @@ async def await_rand_question(ctx):
                 return  # if the bot responds, end the function right away
             elif current_channel_id != attempt.channel.id:
                 continue  # if the channel doesn't match, try again
-            elif attempt.content in ['t.q', 't.top']:
+            elif attempt.content in ['f.i', 'f.top']:
                 break
             elif is_valid(attempt.content, panel):
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, panel.get_value())  # increase score here
                 return
             elif attempt.content != panel.get_answer():
-                print('Incorrect check\n')
+                # print('Incorrect check\n')
                 await ctx.send('That is incorrect {}. You lost ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, -1*panel.get_value())  # decrease score here
         except Exception as e:
