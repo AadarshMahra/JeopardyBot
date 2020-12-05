@@ -3,12 +3,13 @@ from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from utils.functions import fetch_random_panel as frp
 from utils.functions import is_valid
+from utils.functions import jaro_winkler
 import time
 
 #  global dict to keep track of user score in every server
 #  key: (username, server id), value: user score in that server
 scores = {}
-valid_starters = ['what is ', 'What is ']
+
 with open('config.txt', 'r') as f:
     TOKEN = f.readline().strip()
 
@@ -86,11 +87,11 @@ async def await_rand_question(ctx):
                 continue  # if the channel doesn't match, try again
             elif attempt.content in ['f.i', 'f.top']:
                 break
-            elif is_valid(attempt.content, panel):
+            if jaro_winkler(attempt.content, panel.get_answer()) >= 0.40:
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, panel.get_value())  # increase score here
                 return
-            elif attempt.content != panel.get_answer():
+            else:
                 # print('Incorrect check\n')
                 await ctx.send('That is incorrect {}. You lost ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, -1*panel.get_value())  # decrease score here
