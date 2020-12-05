@@ -13,3 +13,6 @@ https://discord.com/api/oauth2/authorize?client_id=723432980726546453&permission
 
 ### Check channel leaderboard  
   ***f.top*** displays the text channel's current leaderboard. 
+ Example: 
+ 
+ ![second](https://media.discordapp.net/attachments/754568181066235994/784890173056876574/unknown.png?width=581&height=600)
