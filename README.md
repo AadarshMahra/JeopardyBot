@@ -16,4 +16,6 @@ Example:
 ### Check Leaderboard
 ```f.top``` displays the top scores for that text channel 
 
+Example : 
 
+![first](https://media.discordapp.net/attachments/754568181066235994/784890173056876574/unknown.png?width=581&height=600)
