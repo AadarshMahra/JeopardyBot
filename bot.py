@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from utils.functions import fetch_random_panel as frp
-from utils.functions import is_valid
+from utils.functions import jaro_winkler
 import time
 # welcome dMahra
 #  global dict to keep track of user score in every server
@@ -24,7 +24,7 @@ def update_scores(message, score_update):
             scores[(message.author, message.guild.id)] = 0
         else:
             scores[(message.author, message.guild.id)] += score_update
- 
+
 
 @bot.event
 async def on_ready():
@@ -48,11 +48,17 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-# now displays the score in descending order
-@bot.command(name='t.top')
+# displays top scores in descending order
+# scores are based on server
+@bot.command(name='f.top')
 async def display_server_scores(ctx):
+    # makes sure bot doesn't respond to itself
+    if ctx.author.bot:
+        return
     print(str(ctx.message.author)+" requested scoreboard.")  # print check to console
     embed = discord.Embed(title=f'Top Scores on {ctx.message.guild.name}:', inline=False)
+    if len(scores) == 0:
+        embed.add_field(name="No Scores to Display!", value="Start playing by typing f.i", inline=False)
     sort_orders = sorted(scores.items(), key=lambda x: x[1], reverse=True)  # sorts dict in descending order
     for i in sort_orders:
         username = str(i[0][0])
@@ -60,8 +66,9 @@ async def display_server_scores(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(name='t.q', aliases=['Random'])
+@bot.command(name='f.i', aliases=['f..i'])
 async def await_rand_question(ctx):
+    current_channel_id = ctx.channel.id
     # makes sure bot doesn't respond to itself
     if ctx.author.bot:
         return
@@ -72,21 +79,23 @@ async def await_rand_question(ctx):
     while time.time() < t_end:
         try:
             attempt = await bot.wait_for('message')
-            print('\"{}\" was sent by {}'.format(attempt.content, attempt.author))  # print to console
-            if attempt.content in ['t.q', 't.top']:
+            print('\"{}\" was sent by {} in channel:\'{}\''.format(attempt.content, attempt.author, attempt.channel.name))  # print to console
+            if attempt.author.bot:
+                return  # if the bot responds, end the function right away
+            elif current_channel_id != attempt.channel.id:
+                continue  # if the channel doesn't match, try again
+            elif attempt.content in ['f.i', 'f.top']:
                 break
-            elif attempt.content in ctx.bot.commands:
-                break
-            elif is_valid(attempt.content, panel.get_answer()):
+            if jaro_winkler(attempt.content, panel.get_answer()) >= 0.40:
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, panel.get_value())  # increase score here
                 return
-            elif attempt.content != panel.get_answer():
+            else:
+                # print('Incorrect check\n')
                 await ctx.send('That is incorrect {}. You lost ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, -1*panel.get_value())  # decrease score here
-                continue
         except Exception as e:
-            print(e)
+            print("EXCEPTION: " + str(e))
     await ctx.send('Times up! The correct answer was \'{}\''.format(panel.get_answer()))
 
 bot.run(TOKEN.strip())
