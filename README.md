@@ -5,11 +5,15 @@ Jeopardy bot that displays questions and gives feedback to answers.
 https://discord.com/api/oauth2/authorize?client_id=723432980726546453&permissions=0&scope=bot
 
 ## Commands
-# New Question 
+### New Question 
 ```f.i``` requests a new question. No points are lost for doing so. 
 
+Example:
 
-# Check Leaderboard
+![first](https://media.discordapp.net/attachments/754568181066235994/784886707815841803/unknown.png?width=458&height=599)
+
+
+### Check Leaderboard
 ```f.top``` displays the top scores for that text channel 
 
 
