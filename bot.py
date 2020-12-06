@@ -4,7 +4,7 @@ from discord.ext.commands import CommandNotFound
 from utils.functions import fetch_random_panel as frp
 from utils.functions import jaro_winkler
 import time
-# wassup 
+# wassup
 #  global dict to keep track of user score in every server
 #  key: (username, server id), value: user score in that server
 scores = {}
