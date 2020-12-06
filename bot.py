@@ -86,7 +86,8 @@ async def await_rand_question(ctx):
                 continue  # if the channel doesn't match, try again
             elif attempt.content in ['f.i', 'f.top']:
                 break
-            if jaro_winkler(attempt.content, panel.get_answer()) >= 0.40:
+            if jaro_winkler(attempt.content, panel.get_answer()) >= 0.75:
+                print(jaro_winkler(attempt.content, panel.get_answer()))
                 await ctx.send('Correct {}! You get ${}'.format(str(attempt.author)[:-5], panel.get_value()))
                 update_scores(attempt, panel.get_value())  # increase score here
                 return
