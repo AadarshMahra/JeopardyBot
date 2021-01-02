@@ -50,6 +50,7 @@ async def on_message(message):
 
 # displays top scores in descending order
 # scores are based on server
+# preparing to fix this, print scores only for CALLED SERVER
 @bot.command(name='f.top')
 async def display_server_scores(ctx):
     # makes sure bot doesn't respond to itself
