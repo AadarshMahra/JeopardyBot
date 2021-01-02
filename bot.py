@@ -65,7 +65,7 @@ async def display_server_scores(ctx):
         username = str(i[0][0])
         if i[0][1] == original_guild_id:
             embed.add_field(name=username[:-5], value="$" + str(i[1]), inline=False)
-    await ctx.send(embed=embed, color='red')
+    await ctx.send(embed=embed)
 
 
 @bot.command(name='f.i', aliases=['f..i'])
